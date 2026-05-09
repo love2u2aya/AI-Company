@@ -23,6 +23,13 @@
 3. 条件・納期を交渉 → 社長に最終確認
 4. 契約内容を `FinalOutput/案件_YYYYMMDD.md` に記録
 
+## 使用ツール
+
+| ツール | 用途 |
+|---|---|
+| YouTube Studio | 投稿・アナリティクス確認・収益管理 |
+| LINE | 投稿完了・数値レポートを社長に直接報告 |
+
 ## 成果物の置き場所
 
 投稿レポート → `Workspace/Output/AgentOutput/SNSレポート_YYYYMM.md`
