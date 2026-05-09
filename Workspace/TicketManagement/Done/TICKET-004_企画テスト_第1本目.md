@@ -1,6 +1,6 @@
 # TICKET-004: 企画テスト・第1本目
 
-**ステータス**: Doing  
+**ステータス**: Done  
 **優先度**: 高  
 **担当者**: Creator / Editor / Designer  
 **作成者**: 秘書  
