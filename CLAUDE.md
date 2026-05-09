@@ -28,6 +28,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 | `社長/` | ユーザー本人。指示・意思決定のみ |
 | `秘書/` | 指示をタスク化し、全メンバーを動かす司令塔 |
 | `Planner/` | トレンド調査・動画企画・構成案作成 |
+| `FP/` | 社内顧問FP・深層洞察提供・コンテンツ監修（企画〜台本の金融正確性と深みを担保） |
 | `Critic/` | 企画の批評・品質ゲートキーパー（Planner→社長の間でフィルタリング） |
 | `Creator/` | 撮影・収録・AI素材生成 |
 | `Editor/` | カット編集・テロップ・BGM・書き出し |
