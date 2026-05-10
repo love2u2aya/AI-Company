@@ -1,8 +1,8 @@
 # TICKET-006: 定年前5年シリーズ・第2弾
 
-**ステータス**: Doing  
+**ステータス**: Waiting（社長承認②待ち）
 **優先度**: 高  
-**担当者**: FP / Planner / Critic / Designer  
+**担当者**: FP / Planner / Critic / Creator / Editor / Designer / SNS_Manager  
 **作成者**: 秘書  
 **作成日**: 2026-05-10  
 
@@ -15,8 +15,13 @@ TICKET-005のCritic審査で「案③は方向性優秀だが4つの罠が15分�
 
 ## 完了条件
 
-- [ ] FP: 深掘りブリーフ作成（定年前5年・テーマC補強）
-- [ ] Planner: 企画3案作成（3つの罠に絞った構成）
-- [ ] Critic: 5軸審査・判定
-- [ ] Designer: サムネイルラフ作成（Critic PASS後）
-- [ ] 社長承認①
+- [x] FP: 深掘りブリーフ作成
+- [x] Planner: 企画3案作成
+- [x] Critic: 5軸審査（案③PASS）
+- [x] Designer: サムネイルラフ・本番仕様作成
+- [x] 社長承認①
+- [x] Creator: ナレーション原稿（8,000字）
+- [x] Editor: 編集指示書（7ゾーン・40項目）
+- [x] SNS_Manager: 投稿準備シート作成
+- [ ] 社長承認②
+- [ ] 投稿完了
