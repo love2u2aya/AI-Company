@@ -1,6 +1,6 @@
 # TICKET-006: 定年前5年シリーズ・第2弾
 
-**ステータス**: Waiting（社長承認②待ち）
+**ステータス**: Done
 **優先度**: 高  
 **担当者**: FP / Planner / Critic / Creator / Editor / Designer / SNS_Manager  
 **作成者**: 秘書  
@@ -23,5 +23,5 @@ TICKET-005のCritic審査で「案③は方向性優秀だが4つの罠が15分�
 - [x] Creator: ナレーション原稿（8,000字）
 - [x] Editor: 編集指示書（7ゾーン・40項目）
 - [x] SNS_Manager: 投稿準備シート作成
-- [ ] 社長承認②
-- [ ] 投稿完了
+- [x] 社長承認②
+- [x] 投稿完了
