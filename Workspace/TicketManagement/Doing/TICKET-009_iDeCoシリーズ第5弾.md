@@ -1,6 +1,6 @@
 # TICKET-009: iDeCoシリーズ第5弾・老後の課題額を把握して対策を立てる
 
-**ステータス**: ToDo  
+**ステータス**: Doing  
 **優先度**: 高  
 **担当者**: FP / Planner / Critic / Designer  
 **作成者**: 秘書  
