@@ -1,0 +1,18 @@
+# 動画・音声バイナリ（大容量ファイル）
+*.mp4
+*.mov
+*.wav
+*.mp3
+*.aac
+
+# 一時ファイル（MoviePy書き出し中）
+*TEMP_MPY_wvf_snd.mp4
+slides_tmp/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Python
+__pycache__/
+*.pyc
