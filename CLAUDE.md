@@ -30,9 +30,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 | `Planner/` | トレンド調査・動画企画・構成案作成 |
 | `FP/` | 社内顧問FP・深層洞察提供・コンテンツ監修（企画〜台本の金融正確性と深みを担保） |
 | `Critic/` | 企画の批評・品質ゲートキーパー（Planner→社長の間でフィルタリング） |
-| `Creator/` | 撮影・収録・AI素材生成 |
+| `Creator/` | ナレーション原稿作成・音声収録（スライド制作はSlide Designerが担当） |
 | `Editor/` | カット編集・テロップ・BGM・書き出し |
-| `Designer/` | サムネイル・グラフィック制作 |
+| `Designer/` | サムネイル・グラフィック制作（動画内スライドはSlide Designerが担当） |
+| `Slide_Designer/` | 動画内スライド専任設計・制作（インフォグラフィック・アニメーション） |
 | `SNS_Manager/` | 投稿・アナリティクス・スポンサー対応 |
 
 ## Workspace/ の使い方
