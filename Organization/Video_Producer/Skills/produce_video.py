@@ -132,11 +132,11 @@ def produce(narration_path: str, slide_map_path: str, output_dir: str):
     # 1. ナレーション音声生成（espeak-ngによるローカルTTS）
     print("[1/4] 音声生成中...")
     narration_text = parse_narration(narration_path)
-    narration_text = narration_text[:5000]
+    narration_text = narration_text[:2800]  # ~12-13分相当
     wav_path = str(out / "audio_tmp.wav")
     audio_path = str(out / "audio_tmp.mp3")
     subprocess.run(
-        ["espeak-ng", "-v", "ja", "-s", "150", "-w", wav_path, narration_text],
+        ["espeak-ng", "-v", "ja", "-s", "450", "-w", wav_path, narration_text],
         check=True, capture_output=True,
     )
     # WAV → MP3変換
