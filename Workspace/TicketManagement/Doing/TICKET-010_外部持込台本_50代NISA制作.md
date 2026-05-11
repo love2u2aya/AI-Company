@@ -2,7 +2,7 @@
 
 **ステータス**: Doing
 **優先度**: 高
-**担当者**: Creator / Slide_Designer / Editor / Designer / SNS_Manager
+**担当者**: Creator / Slide_Designer / Editor / Designer / QC / SNS_Manager
 **作成者**: 秘書
 **作成日**: 2026-05-11
 
@@ -59,12 +59,25 @@
 - [ ] 推奨案：パパ顔 + 「50代 月3万→985万円」の具体数字 + ネイビー背景
 - [ ] 2〜3案を `AgentOutput/サムネイル案_外部持込_20260511/` に保存
 
+### QC
+- [ ] Editor納品後、完成MP4・スライド指示書・確定台本・メタデータ草案の受取を確認
+- [ ] 映像チェック（通し視聴1回目：構成・テンポ・テロップ・スクショ静止時間）
+- [ ] 音声チェック（通し視聴2回目：音量・同期・BGM）
+- [ ] 数値突合チェック（台本 vs スクリーン上の全数字）
+- [ ] メタデータチェック（タイトル・チャプター・概要欄・タグ）
+- [ ] `AgentOutput/QCレポート_外部持込_20260511.md` を作成・PASSまたはFAIL判定を記載
+- [ ] PASS時：SNS_Managerにアップロード許可証を発行、秘書に報告
+- スキル参照：`Organization/QC/Skills/quality_check.md`
+
 ### SNS_Manager
-- [ ] 公開直前に最新NISA口座数・CPI数値を確認
-- [ ] 概要欄テンプレートを台本ファイルから転記・更新
+- [ ] QC PASSを確認後、メタデータ（タイトル・概要欄・タグ）を最終整理
+- [ ] YouTube Studioで **非公開** アップロード・サムネイル設定・エンドカード設定
+- [ ] チャプターが正しく機能しているか確認
+- [ ] 非公開URLを秘書に送付（社長確認用）
+- [ ] 社長GO後、公開処理（公開 or スケジュール設定）
 - [ ] 公開後、固定コメントの初期テンプレートを投稿
 - [ ] 次回更新予定日を運用シートに記録（2026年12月）
-- 運用ルール参照：`Organization/SNS_Manager/Skills/固定コメント運用_ロングテール延命.md`
+- スキル参照：`Organization/SNS_Manager/Skills/upload.md` / `固定コメント運用_ロングテール延命.md`
 
 ---
 
@@ -82,4 +95,6 @@
 ## 参照ファイル
 
 - 台本（最終版）：`Workspace/Output/AgentOutput/台本_外部持込_20260511_50代NISA.md`
+- QCスキル：`Organization/QC/Skills/quality_check.md`
+- 非公開アップロード手順：`Organization/SNS_Manager/Skills/upload.md`
 - 固定コメント運用ルール：`Organization/SNS_Manager/Skills/固定コメント運用_ロングテール延命.md`
