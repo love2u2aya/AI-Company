@@ -1,8 +1,8 @@
 # TICKET-008: iDeCoシリーズ第4弾・4変数の計算順序
 
-**ステータス**: Doing  
+**ステータス**: Done  
 **優先度**: 高  
-**担当者**: FP / Planner / Critic / Designer  
+**担当者**: FP / Planner / Critic / Creator / Editor / Designer / SNS_Manager  
 **作成者**: 秘書  
 **作成日**: 2026-05-11  
 
@@ -26,4 +26,5 @@ TICKET-007のCritic審査で「案③『4つの変数と正しい計算順序』
 - [x] Critic: 台本批評・第2審査（CONDITIONAL→修正2点）
 - [x] Editor: 編集指示書（7ゾーン・スクショ2枚・4介入ポイント）
 - [x] SNS_Manager: 投稿準備シート（タイトル3案・ハッシュタグ6個・48時間モニタリング）
-- [ ] 社長承認②
+- [x] 社長承認②
+- [x] 投稿完了
