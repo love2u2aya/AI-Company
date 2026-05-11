@@ -27,7 +27,14 @@ TICKET-008のCritic審査で案①「計算結果が出た後の『課題額の�
 - [x] Planner: 企画3案作成
 - [x] Critic: 5軸審査・判定（全案CONDITIONAL → 案①タイトル修正済み）
 - [x] Designer: サムネイルラフ作成（ラフA・B 2案）
-- [ ] 社長承認①（企画案①＋サムネラフ確認）
+- [x] 社長承認①（GO）
+- [x] Creator: ナレーション原稿作成
+- [x] Slide_Designer: スライドマップ32枚作成
+- [x] Editor: 編集指示書・FinalOutput作成
+- [x] Video_Producer: MP4生成完了（12分41秒 / 16MB）
+- [x] QC: 3回チェック・PASS（S19節税額修正済み）
+- [x] SNS_Manager: アップロード準備報告書作成
+- [ ] 社長承認②（非公開プレビュー確認）
 
 ## 採用案・参照ファイル
 

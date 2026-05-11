@@ -36,6 +36,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 | `Slide_Designer/` | 動画内スライド専任設計・制作（インフォグラフィック・アニメーション） |
 | `SNS_Manager/` | 投稿・アナリティクス・スポンサー対応・YouTube非公開アップロード |
 | `QC/` | 動画品質管理・アップロード許可証の発行（Editor納品後〜アップロード前の最終チェック） |
+| `Video_Producer/` | 実際のMP4生成（espeak-ng音声合成＋Pillow スライド描画＋MoviePy/FFmpeg合成）。`Skills/produce_video.py` を実行する |
 
 ## Workspace/ の使い方
 
