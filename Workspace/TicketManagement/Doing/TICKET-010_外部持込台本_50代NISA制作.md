@@ -1,6 +1,6 @@
 # TICKET-010｜外部持込台本 制作（50代NISA・イレギュラー）
 
-**ステータス**: ToDo
+**ステータス**: Doing
 **優先度**: 高
 **担当者**: Creator / Slide_Designer / Editor / Designer / SNS_Manager
 **作成者**: 秘書
