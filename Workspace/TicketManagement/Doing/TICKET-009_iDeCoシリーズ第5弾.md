@@ -23,8 +23,17 @@ TICKET-008のCritic審査で案①「計算結果が出た後の『課題額の�
 
 ## 完了条件
 
-- [ ] FP: 深掘りブリーフ作成（対策3択の深層情報・制度制約・試算例）
-- [ ] Planner: 企画3案作成
-- [ ] Critic: 5軸審査・判定
-- [ ] Designer: サムネイルラフ（Critic PASS後）
-- [ ] 社長承認①
+- [x] FP: 深掘りブリーフ作成（対策3択の深層情報・制度制約・試算例）
+- [x] Planner: 企画3案作成
+- [x] Critic: 5軸審査・判定（全案CONDITIONAL → 案①タイトル修正済み）
+- [x] Designer: サムネイルラフ作成（ラフA・B 2案）
+- [ ] 社長承認①（企画案①＋サムネラフ確認）
+
+## 採用案・参照ファイル
+
+- **採用案**: 企画案①「不安解消型・判断ツリー」
+- **正タイトル案**: `老後の不足額、3つの対策どれから始める？55歳が知るべき選び方`
+- 企画書: `Workspace/Output/AgentOutput/企画_20260511c.md`
+- FPブリーフ: `Workspace/Output/AgentOutput/FPブリーフ_20260511c.md`
+- 批評レポート: `Workspace/Output/AgentOutput/批評レポート_20260511c.md`
+- サムネラフ: `Workspace/Output/AgentOutput/サムネイルラフ_20260511c/案①ラフ.md`
