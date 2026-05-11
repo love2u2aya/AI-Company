@@ -34,7 +34,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 | `Editor/` | カット編集・テロップ・BGM・書き出し |
 | `Designer/` | サムネイル・グラフィック制作（動画内スライドはSlide Designerが担当） |
 | `Slide_Designer/` | 動画内スライド専任設計・制作（インフォグラフィック・アニメーション） |
-| `SNS_Manager/` | 投稿・アナリティクス・スポンサー対応 |
+| `SNS_Manager/` | 投稿・アナリティクス・スポンサー対応・YouTube非公開アップロード |
+| `QC/` | 動画品質管理・アップロード許可証の発行（Editor納品後〜アップロード前の最終チェック） |
 
 ## Workspace/ の使い方
 
