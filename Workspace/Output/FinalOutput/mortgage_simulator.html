@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>住宅ローン防衛シミュレーター</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif;
+    background: #0f172a;
+    color: #e2e8f0;
+    min-height: 100vh;
+    padding: 24px 16px;
+  }
+
+  .container { max-width: 860px; margin: 0 auto; }
+
+  header {
+    text-align: center;
+    margin-bottom: 32px;
+  }
+
+  header .badge {
+    display: inline-block;
+    background: #ef4444;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 999px;
+    margin-bottom: 12px;
+    letter-spacing: 1px;
+  }
+
+  header h1 {
+    font-size: clamp(18px, 4vw, 26px);
+    font-weight: 800;
+    line-height: 1.4;
+    color: #f8fafc;
+  }
+
+  header h1 span { color: #f59e0b; }
+
+  header p {
+    margin-top: 8px;
+    font-size: 13px;
+    color: #94a3b8;
+  }
+
+  /* Input Card */
+  .card {
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 24px;
+  }
+
+  .card-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #94a3b8;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .card-title::before {
+    content: '';
+    display: inline-block;
+    width: 4px;
+    height: 16px;
+    background: #3b82f6;
+    border-radius: 2px;
+  }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 540px) { .grid-2 { grid-template-columns: 1fr; } }
+
+  .field label {
+    display: block;
+    font-size: 12px;
+    color: #94a3b8;
+    margin-bottom: 6px;
+    font-weight: 600;
+  }
+
+  .field .input-wrap {
+    position: relative;
+  }
+
+  .field input[type="number"] {
+    width: 100%;
+    background: #0f172a;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    color: #f1f5f9;
+    font-size: 16px;
+    font-weight: 600;
+    padding: 10px 44px 10px 14px;
+    outline: none;
+    transition: border-color 0.2s;
+    -moz-appearance: textfield;
+  }
+
+  .field input[type="number"]::-webkit-inner-spin-button,
+  .field input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; }
+
+  .field input[type="number"]:focus { border-color: #3b82f6; }
+
+  .field .unit {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 12px;
+    color: #64748b;
+    pointer-events: none;
+  }
+
+  /* Slider */
+  .slider-field { margin-bottom: 4px; }
+  .slider-field label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    color: #94a3b8;
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+  .slider-field label span {
+    font-size: 18px;
+    font-weight: 700;
+    color: #f59e0b;
+  }
+
+  input[type="range"] {
+    width: 100%;
+    accent-color: #3b82f6;
+    cursor: pointer;
+    height: 4px;
+  }
+
+  .slider-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: #475569;
+    margin-top: 4px;
+  }
+
+  /* Button */
+  .btn {
+    display: block;
+    width: 100%;
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    color: #fff;
+    font-size: 17px;
+    font-weight: 700;
+    padding: 16px;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+    box-shadow: 0 4px 20px rgba(37,99,235,0.4);
+    letter-spacing: 0.5px;
+    margin-bottom: 28px;
+  }
+  .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(37,99,235,0.5); }
+  .btn:active { transform: translateY(0); }
+
+  /* Results */
+  #results { display: none; }
+
+  .vs-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  @media (max-width: 540px) { .vs-grid { grid-template-columns: 1fr; } }
+
+  .result-card {
+    background: #1e293b;
+    border: 2px solid #334155;
+    border-radius: 16px;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .result-card.pattern-a { border-color: #ef4444; }
+  .result-card.pattern-b { border-color: #22c55e; }
+
+  .result-card .pattern-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .pattern-a .pattern-label { color: #f87171; }
+  .pattern-b .pattern-label { color: #4ade80; }
+
+  .result-card .pattern-name {
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    color: #f1f5f9;
+  }
+
+  .metric {
+    margin-bottom: 12px;
+  }
+  .metric .metric-label {
+    font-size: 11px;
+    color: #64748b;
+    margin-bottom: 2px;
+  }
+  .metric .metric-value {
+    font-size: 20px;
+    font-weight: 800;
+    color: #f1f5f9;
+  }
+  .metric .metric-value.positive { color: #4ade80; }
+  .metric .metric-value.negative { color: #f87171; }
+  .metric .metric-value.neutral { color: #f59e0b; }
+
+  .metric .metric-sub {
+    font-size: 11px;
+    color: #64748b;
+    margin-top: 1px;
+  }
+
+  .divider {
+    border: none;
+    border-top: 1px solid #334155;
+    margin: 12px 0;
+  }
+
+  /* Winner Banner */
+  .winner-card {
+    background: linear-gradient(135deg, #064e3b, #065f46);
+    border: 2px solid #22c55e;
+    border-radius: 16px;
+    padding: 20px 24px;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .winner-icon {
+    font-size: 40px;
+    flex-shrink: 0;
+  }
+
+  .winner-text h3 {
+    font-size: 16px;
+    font-weight: 800;
+    color: #4ade80;
+    margin-bottom: 4px;
+  }
+
+  .winner-text p {
+    font-size: 13px;
+    color: #6ee7b7;
+    line-height: 1.6;
+  }
+
+  .winner-text strong { color: #fff; }
+
+  /* Timeline */
+  .timeline-card {
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 24px;
+  }
+
+  .chart-wrap {
+    overflow-x: auto;
+    padding-bottom: 8px;
+  }
+
+  canvas { width: 100% !important; }
+
+  /* Disclaimer */
+  .disclaimer {
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 12px;
+    padding: 16px 20px;
+    font-size: 11px;
+    color: #64748b;
+    line-height: 1.7;
+  }
+
+  .disclaimer strong { color: #94a3b8; }
+
+  /* Pulse animation for winner */
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(34,197,94,0.4); }
+    50% { box-shadow: 0 0 0 8px rgba(34,197,94,0); }
+  }
+  .winner-card { animation: pulse 2.5s infinite; }
+
+  /* Reset link */
+  .reset-btn {
+    display: block;
+    text-align: center;
+    color: #475569;
+    font-size: 13px;
+    cursor: pointer;
+    margin-bottom: 24px;
+    text-decoration: underline;
+    background: none;
+    border: none;
+    width: 100%;
+  }
+  .reset-btn:hover { color: #94a3b8; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <div class="badge">内部向け シミュレーター</div>
+    <h1>住宅ローン <span>繰り上げ返済 vs ドル建て保険</span><br>金利差シミュレーター</h1>
+    <p>あなたの数字を入力して、どちらが有利か瞬時に確認できます</p>
+  </header>
+
+  <!-- Input -->
+  <div class="card" id="input-section">
+    <div class="card-title">住宅ローンの情報</div>
+    <div class="grid-2">
+      <div class="field">
+        <label>ローン残高</label>
+        <div class="input-wrap">
+          <input type="number" id="balance" value="1000" min="100" max="10000" step="100">
+          <span class="unit">万円</span>
+        </div>
+      </div>
+      <div class="field">
+        <label>残り返済期間</label>
+        <div class="input-wrap">
+          <input type="number" id="years" value="10" min="1" max="35" step="1">
+          <span class="unit">年</span>
+        </div>
+      </div>
+      <div class="field">
+        <label>現在の金利（変動）</label>
+        <div class="input-wrap">
+          <input type="number" id="rateNow" value="1.0" min="0.1" max="5.0" step="0.1">
+          <span class="unit">%</span>
+        </div>
+      </div>
+      <div class="field">
+        <label>引き上げ後の金利</label>
+        <div class="input-wrap">
+          <input type="number" id="rateNew" value="2.0" min="0.1" max="8.0" step="0.1">
+          <span class="unit">%</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top: 20px;">
+      <div class="card-title">手元資金と保険利回り</div>
+      <div class="grid-2">
+        <div class="field">
+          <label>繰り上げ返済 or 保険に回す金額</label>
+          <div class="input-wrap">
+            <input type="number" id="funds" value="1000" min="100" max="10000" step="100">
+            <span class="unit">万円</span>
+          </div>
+        </div>
+        <div class="field" style="display:flex; flex-direction:column; justify-content:flex-end;">
+          <div class="slider-field">
+            <label>
+              一時払いドル建て保険の想定利回り
+              <span id="insuranceRateLabel">4.0%</span>
+            </label>
+            <input type="range" id="insuranceRate" min="2.0" max="6.0" step="0.5" value="4.0"
+              oninput="document.getElementById('insuranceRateLabel').textContent = parseFloat(this.value).toFixed(1) + '%'">
+            <div class="slider-labels"><span>2%</span><span>4%</span><span>6%</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top: 8px;">
+      <div class="slider-field">
+        <label>
+          シミュレーション期間
+          <span id="simYearsLabel">10年</span>
+        </label>
+        <input type="range" id="simYears" min="5" max="30" step="1" value="10"
+          oninput="document.getElementById('simYearsLabel').textContent = this.value + '年'">
+        <div class="slider-labels"><span>5年</span><span>10年</span><span>20年</span><span>30年</span></div>
+      </div>
+    </div>
+  </div>
+
+  <button class="btn" onclick="simulate()">シミュレーションを実行する →</button>
+
+  <!-- Results -->
+  <div id="results">
+
+    <div class="vs-grid">
+      <!-- Pattern A -->
+      <div class="result-card pattern-a">
+        <div class="pattern-label">Pattern A</div>
+        <div class="pattern-name">繰り上げ返済した場合</div>
+
+        <div class="metric">
+          <div class="metric-label">節約できる利息（現在との差）</div>
+          <div class="metric-value positive" id="a-interest-saved">—</div>
+        </div>
+        <hr class="divider">
+        <div class="metric">
+          <div class="metric-label">10年後の手元資金</div>
+          <div class="metric-value negative" id="a-remaining">—</div>
+          <div class="metric-sub" id="a-remaining-sub"></div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">純利益（節約利息 ー 機会損失）</div>
+          <div class="metric-value neutral" id="a-net">—</div>
+        </div>
+      </div>
+
+      <!-- Pattern B -->
+      <div class="result-card pattern-b">
+        <div class="pattern-label">Pattern B</div>
+        <div class="pattern-name">ドル建て保険で運用した場合</div>
+
+        <div class="metric">
+          <div class="metric-label">保険の解約返戻金（期末）</div>
+          <div class="metric-value positive" id="b-return">—</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">払う利息合計（引き上げ後）</div>
+          <div class="metric-value negative" id="b-interest-paid">—</div>
+        </div>
+        <hr class="divider">
+        <div class="metric">
+          <div class="metric-label">純利益（運用益 ー 支払利息）</div>
+          <div class="metric-value positive" id="b-net">—</div>
+          <div class="metric-sub" id="b-net-sub"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Winner -->
+    <div class="winner-card" id="winner-card">
+      <div class="winner-icon" id="winner-icon">🏆</div>
+      <div class="winner-text">
+        <h3 id="winner-title">—</h3>
+        <p id="winner-desc">—</p>
+      </div>
+    </div>
+
+    <!-- Chart -->
+    <div class="timeline-card">
+      <div class="card-title">資産推移グラフ（累積）</div>
+      <div class="chart-wrap">
+        <canvas id="myChart" height="260"></canvas>
+      </div>
+    </div>
+
+    <button class="reset-btn" onclick="resetForm()">← 条件を変えて再シミュレーション</button>
+
+    <div class="disclaimer">
+      <strong>【免責事項】</strong>
+      本シミュレーターは教育・参考目的の概算です。実際の住宅ローン返済額・利息計算は金融機関の条件によって異なります。ドル建て保険の利回りは為替変動・保険会社の条件により変動し、元本保証ではありません。本資料は保険・金融商品の勧誘を目的とするものではありません。個別の判断は必ず専門家（IFA・FP）にご相談ください。
+    </div>
+  </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+let chartInstance = null;
+
+function monthlyPayment(principal, annualRate, months) {
+  if (annualRate === 0) return principal / months;
+  const r = annualRate / 100 / 12;
+  return principal * 10000 * r * Math.pow(1 + r, months) / (Math.pow(1 + r, months) - 1);
+}
+
+function totalInterest(principal, annualRate, months) {
+  const mp = monthlyPayment(principal, annualRate, months);
+  return mp * months - principal * 10000;
+}
+
+function fmt(yen) {
+  const man = Math.round(yen / 10000);
+  if (Math.abs(man) >= 10000) {
+    return (man / 10000).toFixed(2) + '億円';
+  }
+  return man.toLocaleString() + '万円';
+}
+
+function simulate() {
+  const balance   = parseFloat(document.getElementById('balance').value)   || 1000;
+  const years     = parseInt(document.getElementById('years').value)       || 10;
+  const rateNow   = parseFloat(document.getElementById('rateNow').value)   || 1.0;
+  const rateNew   = parseFloat(document.getElementById('rateNew').value)   || 2.0;
+  const funds     = parseFloat(document.getElementById('funds').value)     || 1000;
+  const insRate   = parseFloat(document.getElementById('insuranceRate').value) || 4.0;
+  const simYears  = parseInt(document.getElementById('simYears').value)    || 10;
+
+  const months = years * 12;
+
+  // Interest totals
+  const intNow = totalInterest(balance, rateNow, months);
+  const intNew = totalInterest(balance, rateNew, months);
+  const simMonths = Math.min(simYears, years) * 12;
+  const intNewSim = totalInterest(balance, rateNew, simMonths); // interest for sim period only
+
+  // Pattern A: prepayment saves the new-rate interest, but funds are gone
+  const interestSaved = intNew - intNow; // vs current scenario
+  const aNet = interestSaved; // simplified: net gain is just the interest delta saved
+
+  // Pattern B: insurance growth - interest paid over sim period
+  const insEndValue = funds * 10000 * Math.pow(1 + insRate / 100, simYears);
+  const insGain = insEndValue - funds * 10000;
+  const interestPaidB = totalInterest(balance, rateNew, simMonths);
+  const bNet = insGain - interestPaidB;
+
+  // Fill in results
+  document.getElementById('a-interest-saved').textContent = '+' + fmt(interestSaved) + ' 節約';
+  document.getElementById('a-remaining').textContent = '0円（手元資金なし）';
+  document.getElementById('a-remaining-sub').textContent = `${fmt(funds * 10000)} を返済に使い切り、流動性ゼロ`;
+  document.getElementById('a-net').textContent = fmt(aNet);
+
+  document.getElementById('b-return').textContent = fmt(insEndValue) + ` (+${fmt(insGain)})`;
+  document.getElementById('b-interest-paid').textContent = '▲' + fmt(interestPaidB);
+  document.getElementById('b-net').textContent = '+' + fmt(bNet);
+  document.getElementById('b-net-sub').textContent = `手元資金 ${fmt(funds * 10000)} を保持しながら得た利益`;
+
+  // Winner
+  const diff = bNet - aNet;
+  const wTitle = document.getElementById('winner-title');
+  const wDesc  = document.getElementById('winner-desc');
+  const wCard  = document.getElementById('winner-card');
+  const wIcon  = document.getElementById('winner-icon');
+
+  if (diff > 0) {
+    wIcon.textContent = '🏆';
+    wTitle.textContent = `パターンB が ${fmt(diff)} お得！`;
+    wDesc.innerHTML = `<strong>ドル建て保険（年利 ${insRate}%）</strong> で運用することで、繰り上げ返済と比べて <strong>${fmt(diff)}</strong> 多く手元に残ります。さらに流動性（いつでも解約可）と死亡保障も確保できます。`;
+    wCard.style.background = 'linear-gradient(135deg,#064e3b,#065f46)';
+    wCard.style.borderColor = '#22c55e';
+    wTitle.style.color = '#4ade80';
+  } else {
+    wIcon.textContent = '⚠️';
+    wTitle.textContent = `この条件ではパターンA（繰り上げ返済）が有利`;
+    wDesc.innerHTML = `住宅ローン金利（${rateNew}%）と保険利回り（${insRate}%）の差が小さいため、繰り上げ返済が <strong>${fmt(-diff)}</strong> 有利です。ただし<strong>流動性リスク</strong>には注意が必要です。`;
+    wCard.style.background = 'linear-gradient(135deg,#1c1917,#292524)';
+    wCard.style.borderColor = '#f59e0b';
+    wTitle.style.color = '#fbbf24';
+  }
+
+  // Chart data
+  const labels = [];
+  const dataA  = [];
+  const dataB  = [];
+
+  for (let y = 0; y <= simYears; y++) {
+    labels.push(`${y}年後`);
+    // A: just the interest saved (linear approximation over time)
+    dataA.push(Math.round((interestSaved * y / simYears) / 10000));
+    // B: insurance value growth minus interest paid so far
+    const insVal = funds * 10000 * Math.pow(1 + insRate / 100, y);
+    const insG   = insVal - funds * 10000;
+    const intPaidSoFar = totalInterest(balance, rateNew, Math.min(y, years) * 12);
+    dataB.push(Math.round((insG - intPaidSoFar) / 10000));
+  }
+
+  if (chartInstance) chartInstance.destroy();
+  const ctx = document.getElementById('myChart').getContext('2d');
+  chartInstance = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        {
+          label: 'パターンA（繰り上げ返済）純利益 [万円]',
+          data: dataA,
+          borderColor: '#f87171',
+          backgroundColor: 'rgba(248,113,113,0.1)',
+          tension: 0.3,
+          fill: true,
+          pointRadius: 3,
+        },
+        {
+          label: 'パターンB（ドル建て保険）純利益 [万円]',
+          data: dataB,
+          borderColor: '#4ade80',
+          backgroundColor: 'rgba(74,222,128,0.1)',
+          tension: 0.3,
+          fill: true,
+          pointRadius: 3,
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: {
+          labels: { color: '#94a3b8', font: { size: 12 } }
+        },
+        tooltip: {
+          callbacks: {
+            label: ctx => ` ${ctx.dataset.label.split('）')[0]}）: ${ctx.parsed.y.toLocaleString()} 万円`,
+          },
+          backgroundColor: '#1e293b',
+          borderColor: '#334155',
+          borderWidth: 1,
+          titleColor: '#f1f5f9',
+          bodyColor: '#94a3b8',
+        },
+      },
+      scales: {
+        x: {
+          ticks: { color: '#64748b', font: { size: 11 } },
+          grid: { color: '#1e293b' },
+        },
+        y: {
+          ticks: {
+            color: '#64748b',
+            font: { size: 11 },
+            callback: v => v.toLocaleString() + '万',
+          },
+          grid: { color: '#334155' },
+        },
+      },
+    },
+  });
+
+  document.getElementById('results').style.display = 'block';
+  document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function resetForm() {
+  document.getElementById('results').style.display = 'none';
+  document.getElementById('input-section').scrollIntoView({ behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
