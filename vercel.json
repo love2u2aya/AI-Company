@@ -1,0 +1,9 @@
+{
+  "version": 2,
+  "routes": [
+    {
+      "src": "/",
+      "dest": "/Workspace/Output/FinalOutput/mortgage_simulator.html"
+    }
+  ]
+}
