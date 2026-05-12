@@ -41,8 +41,14 @@ def get_credentials(client_secret_path: str) -> Credentials:
             creds.refresh(Request())
         else:
             flow = InstalledAppFlow.from_client_secrets_file(client_secret_path, SCOPES)
-            # ポート8080でローカルサーバーを起動してOAuthコードを受け取る
-            creds = flow.run_local_server(port=8080, open_browser=True)
+            # ヘッドレスサーバー用：URLを表示してコードを手動入力
+            flow.redirect_uri = "urn:ietf:wg:oauth:2.0:oob"
+            auth_url, _ = flow.authorization_url(prompt="consent")
+            print("\n以下のURLをブラウザで開き、表示されたコードを貼り付けてください:")
+            print(auth_url)
+            code = input("\n認証コード: ").strip()
+            flow.fetch_token(code=code)
+            creds = flow.credentials
         with open(TOKEN_PATH, "w") as f:
             f.write(creds.to_json())
     return creds
