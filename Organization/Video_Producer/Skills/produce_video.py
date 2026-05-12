@@ -80,11 +80,16 @@ def parse_slide_map(path: str) -> list[dict]:
     slides = []
     with open(path, encoding="utf-8") as f:
         for line in f:
-            # "| S01 | 0:00 | ..." の行を解析
-            m = re.match(r"\|\s*(S\d+)\s*\|\s*([\d:]+)\s*\|[^|]+\|\s*(.+?)\s*\|", line)
+            # "| S01 | 0:00 | ..." または "| 1 | 0:00〜0:10 | ..." の行を解析
+            m = re.match(r"\|\s*(S?\d+)\s*\|\s*([\d:〜\-]+)\s*\|[^|]+\|\s*(.+?)\s*\|", line)
             if not m:
                 continue
-            no, tc, content = m.group(1), m.group(2), m.group(3)
+            raw_no, tc, content = m.group(1), m.group(2), m.group(3)
+            # スライド番号をSXX形式に正規化
+            if re.match(r"^\d+$", raw_no):
+                no = f"S{int(raw_no):02d}"
+            else:
+                no = raw_no
             # ★スクショ推奨スライドは表示時間を長めに
             is_screenshot = "スクショ推奨" in line or "★" in line
             # タイトルと本文を分割（**太字**をタイトル、残りを本文）
