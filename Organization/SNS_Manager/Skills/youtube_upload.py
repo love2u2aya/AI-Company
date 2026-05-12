@@ -41,12 +41,22 @@ def get_credentials(client_secret_path: str) -> Credentials:
             creds.refresh(Request())
         else:
             flow = InstalledAppFlow.from_client_secrets_file(client_secret_path, SCOPES)
-            # ヘッドレスサーバー用：URLを表示してコードを手動入力
-            flow.redirect_uri = "urn:ietf:wg:oauth:2.0:oob"
-            auth_url, _ = flow.authorization_url(prompt="consent")
-            print("\n以下のURLをブラウザで開き、表示されたコードを貼り付けてください:")
+            # ヘッドレスサーバー用：localhostリダイレクト方式
+            flow.redirect_uri = "http://localhost"
+            auth_url, _ = flow.authorization_url(prompt="consent", access_type="offline")
+            print("\n【手順】")
+            print("1. 以下のURLをブラウザで開く")
+            print("2. Googleアカウントで許可")
+            print("3. 「このサイトにアクセスできません」画面のアドレスバーのURL全体をコピー")
+            print("4. ここに貼り付けてEnter\n")
             print(auth_url)
-            code = input("\n認証コード: ").strip()
+            redirected = input("\nリダイレクト先のURL全体: ").strip()
+            # URLからcodeパラメータを抽出
+            from urllib.parse import urlparse, parse_qs
+            parsed = urlparse(redirected)
+            code = parse_qs(parsed.query).get("code", [None])[0]
+            if not code:
+                raise ValueError(f"URLからcodeが取得できませんでした: {redirected}")
             flow.fetch_token(code=code)
             creds = flow.credentials
         with open(TOKEN_PATH, "w") as f:
