@@ -1,6 +1,7 @@
 # TICKET-010｜外部持込台本 制作（50代NISA・イレギュラー）
 
-**ステータス**: Waiting
+**ステータス**: Waiting（社長承認②済・YouTube非公開アップロード待ち）
+**サムネイル**: 案A確定（数字直撃型・月3万→985万円）
 **優先度**: 高
 **担当者**: Creator / Slide_Designer / Editor / Designer / QC / SNS_Manager
 **作成者**: 秘書
