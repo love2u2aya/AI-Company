@@ -32,26 +32,43 @@ SCOPES = [
 TOKEN_PATH = Path(__file__).parent / "token.json"
 
 
-def get_credentials(client_secret_path: str) -> Credentials:
+def get_auth_url(client_secret_path: str) -> str:
+    """認証URLだけ返す（ステップ1用）"""
+    flow = InstalledAppFlow.from_client_secrets_file(client_secret_path, SCOPES)
+    flow.redirect_uri = "http://localhost"
+    auth_url, _ = flow.authorization_url(prompt="consent", access_type="offline")
+    return auth_url
+
+
+def exchange_code(client_secret_path: str, redirected_url: str) -> Credentials:
+    """リダイレクトURLからトークンを取得（ステップ2用）"""
+    from urllib.parse import urlparse, parse_qs
+    flow = InstalledAppFlow.from_client_secrets_file(client_secret_path, SCOPES)
+    flow.redirect_uri = "http://localhost"
+    parsed = urlparse(redirected_url)
+    code = parse_qs(parsed.query).get("code", [None])[0]
+    if not code:
+        raise ValueError(f"URLからcodeが取得できませんでした: {redirected_url}")
+    flow.fetch_token(code=code)
+    return flow.credentials
+
+
+def get_credentials(client_secret_path: str, redirected_url: str = None) -> Credentials:
     creds = None
     if TOKEN_PATH.exists():
         creds = Credentials.from_authorized_user_file(str(TOKEN_PATH), SCOPES)
     if not creds or not creds.valid:
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())
+        elif redirected_url:
+            creds = exchange_code(client_secret_path, redirected_url)
         else:
+            # 対話モード
             flow = InstalledAppFlow.from_client_secrets_file(client_secret_path, SCOPES)
-            # ヘッドレスサーバー用：localhostリダイレクト方式
             flow.redirect_uri = "http://localhost"
             auth_url, _ = flow.authorization_url(prompt="consent", access_type="offline")
-            print("\n【手順】")
-            print("1. 以下のURLをブラウザで開く")
-            print("2. Googleアカウントで許可")
-            print("3. 「このサイトにアクセスできません」画面のアドレスバーのURL全体をコピー")
-            print("4. ここに貼り付けてEnter\n")
             print(auth_url)
             redirected = input("\nリダイレクト先のURL全体: ").strip()
-            # URLからcodeパラメータを抽出
             from urllib.parse import urlparse, parse_qs
             parsed = urlparse(redirected)
             code = parse_qs(parsed.query).get("code", [None])[0]
@@ -64,8 +81,8 @@ def get_credentials(client_secret_path: str) -> Credentials:
     return creds
 
 
-def upload_video(video_path: str, client_secret_path: str) -> str:
-    creds = get_credentials(client_secret_path)
+def upload_video(video_path: str, client_secret_path: str, redirected_url: str = None) -> str:
+    creds = get_credentials(client_secret_path, redirected_url)
     youtube = build("youtube", "v3", credentials=creds)
 
     # FinalOutputのメタデータファイルからタイトル・説明・タグを読み込む
@@ -145,7 +162,15 @@ def upload_video(video_path: str, client_secret_path: str) -> str:
 
 
 if __name__ == "__main__":
-    if len(sys.argv) < 3:
+    if len(sys.argv) == 3 and sys.argv[2] == "--get-auth-url":
+        # ステップ1: 認証URLだけ表示
+        print(get_auth_url(sys.argv[1]))
+    elif len(sys.argv) == 4:
+        # ステップ2: リダイレクトURLを第3引数で受け取ってアップロード
+        upload_video(sys.argv[1], sys.argv[2], redirected_url=sys.argv[3])
+    elif len(sys.argv) == 3:
+        # トークン済みの場合（token.json存在時）
+        upload_video(sys.argv[1], sys.argv[2])
+    else:
         print(__doc__)
         sys.exit(1)
-    upload_video(sys.argv[1], sys.argv[2])
