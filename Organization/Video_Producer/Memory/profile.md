@@ -10,9 +10,13 @@
 
 | 作業 | 使用ツール |
 |---|---|
-| 音声生成（ナレーション） | gTTS（Google Text-to-Speech）/ 日本語 |
-| スライド画像生成 | Pillow（PIL）/ 1920×1080px |
-| 動画合成・書き出し | MoviePy + FFmpeg |
+| 音声生成（ナレーション） | Open JTalk ＋ HTS voice tohoku-f01（文単位で合成） |
+| モーショングラフィックス | Pillow（PIL）/ 1920×1080px / 30fps / Noto Sans JP |
+| BGM・効果音 | NumPyで自動作曲・合成。ナレーション中は自動ダッキング |
+| 動画合成・書き出し | FFmpeg（シーン並列レンダリング・-14 LUFS 正規化） |
+
+**メインスキル**: `Skills/produce_video_pro.py`（手順書: `Skills/produce_video_pro.md`）
+旧版 `Skills/produce_video.py` は互換のため残す。
 
 ---
 
@@ -35,11 +39,13 @@ Editor が作成した「編集指示書」とSlide_Designerの「スライド�
 - 音声ファイル: `AgentOutput/音声_YYYYMMDD.mp3`
 - スライド画像群: `AgentOutput/スライド_YYYYMMDD/S01.png` 〜
 - 完成MP4: `FinalOutput/動画_YYYYMMDD_タイトル.mp4`
+- 字幕SRT・YouTubeチャプター・サムネイル（PRO版で自動生成）
 
 ---
 
 ## 制約・注意事項
 
-- gTTSの読み上げ品質は機械音声（実運用では人間のナレーションに差し替え）
-- スライドはシンプルなテキスト＋背景色での描画（デザインシステムのカラーに準拠）
+- 読み上げは機械音声（実運用では人間のナレーションへの差し替えも検討）
+- 英字の固有名詞は台本で `{表示|読み}` を指定して読みを補正する
+- 音声モデル tohoku-f01 は CC BY 4.0。動画のクレジット表記は必須
 - 生成したMP4はQCの通し視聴チェック対象になる

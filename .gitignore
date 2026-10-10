@@ -18,3 +18,7 @@ __pycache__/
 *.pyc
 client_secret.json
 Organization/SNS_Manager/Skills/token.json
+
+# Video_Producer PRO: 音声モデル（setup_pro.shで取得）・作業ディレクトリ
+Organization/Video_Producer/Skills/voices/
+_work_*/
