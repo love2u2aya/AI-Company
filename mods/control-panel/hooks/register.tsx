@@ -7,6 +7,9 @@ const PANE = 'control-panel'
 const TITLE = 'コントロールパネル'
 const LOG_CAP = 500
 const POLL_MS = 3000
+/** The tool the model calls when asked to open the panel; the person's own way is /panel. */
+const OPEN_TOOL = 'open_panel'
+const OPEN_TOOL_FULL = `mcp__control-panel__${OPEN_TOOL}`
 
 const usage = atom({ plugin: 'control-panel', key: 'usage' } as const, null)
 const agents = atom({ plugin: 'control-panel', key: 'agents' } as const, [])
@@ -149,7 +152,10 @@ const refreshAgents = async ($: Dollar) => {
   if (!same(before, merged)) await update($, agents, () => merged)
 }
 
-const refreshAll = async ($: Dollar) => {
+/** Never rejects: it runs from timers and unawaited, where a failure has nobody to tell. */
+const refreshAll = ($: Dollar) => refreshAllOnce($).catch(() => undefined)
+
+const refreshAllOnce = async ($: Dollar) => {
   await Promise.allSettled([refreshUsage($), refreshAgents($)])
   const isBusy =
     (await read($, turn)).isRunning ||
@@ -180,6 +186,14 @@ export const register: Register = on => {
       name: 'panel',
       description: 'コントロールパネル(サブエージェント・進捗・トークン・履歴)を開く',
     })
+    await $.tool.register({
+      name: OPEN_TOOL,
+      description:
+        'Opens the control panel pane (subagents, running work, progress, tokens, history). ' +
+        'Call it when the user asks to open or show the control panel / コントロールパネル.',
+      inputSchema: { type: 'object', properties: {} },
+      isDeferred: false,
+    })
     void $.ui.open({ id: PANE, title: TITLE })
     void refreshAll($)
     $.clock.every(POLL_MS, () => void refreshAll($))
@@ -205,7 +219,7 @@ export const register: Register = on => {
     }))
     await update($, now, () => at)
     await pushLog($, { at, kind: 'prompt', text: e.text ? `指示: ${e.text}` : '(続行)' })
-    void refreshStatus($)
+    void refreshStatus($).catch(() => undefined)
 
     return next(e)
   })
@@ -231,6 +245,16 @@ export const register: Register = on => {
   })
 
   on('tool.call', async ($, e, next) => {
+    if (String(e.tool) === OPEN_TOOL_FULL) {
+      const { isPlaced } = await $.ui.open({ id: PANE, title: TITLE })
+      await refreshAll($)
+      return {
+        result: isPlaced
+          ? 'The control panel is open.'
+          : 'The control panel was opened, but no surface is drawing panes right now; the user can type /panel.',
+      }
+    }
+
     const at = await $.clock.now()
     const loose = e as unknown as { tool: string } & Record<string, unknown>
     if (e.agentId === undefined) await update($, turn, t => ({ ...t, tools: t.tools + 1 }))
@@ -273,7 +297,7 @@ export const register: Register = on => {
     const call: ActiveCall = { id: e.tool_use_id, text: describeCall(loose), agentId: e.agentId, startedAt: at }
     await update($, active, list => [...list, call].slice(-100))
     await update($, now, () => at)
-    void refreshStatus($)
+    void refreshStatus($).catch(() => undefined)
 
     let ran: Awaited<ReturnType<typeof next>>
     try {
@@ -294,7 +318,7 @@ export const register: Register = on => {
         }))
       }
     }
-    if (e.tool === 'TodoWrite' || e.tool === 'TaskUpdate' || e.tool === 'TaskCreate') void refreshStatus($)
+    if (e.tool === 'TodoWrite' || e.tool === 'TaskUpdate' || e.tool === 'TaskCreate') void refreshStatus($).catch(() => undefined)
     if (e.tool === 'Agent') void refreshAgents($)
     if (ran.isError) {
       await pushLog($, { at: await $.clock.now(), kind: 'error', text: `失敗: ${e.tool}`, agentId: e.agentId })

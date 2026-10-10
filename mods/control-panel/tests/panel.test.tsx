@@ -59,3 +59,10 @@ test('progress, history and tabs show on every surface', async ($, on) => {
     await ui.unmount()
   }
 })
+
+test('the model can open the panel with its tool', async ($, on) => {
+  mock.clock(on)
+  on('ui.open', () => ({ value: { isPlaced: true } }))
+  const ran = await $.tool.call({ tool: 'mcp__control-panel__open_panel' } as never)
+  expect(ran.result).toBe('The control panel is open.')
+})
