@@ -67,3 +67,11 @@ mkdir -p Organization/<メンバー名>/{Memory,Skills}
 
 - `Memory/profile.md`: ニックネーム・役割・担当・強みを記載
 - `Skills/<役割>.md`: 作業フロー（番号付きステップ）・判断基準・成果物の置き場所を記載
+
+## やることボード（全セッション横断の未解決タスク）
+
+各セッションで出た未解決事項・後でやることは、非公開の **やることボード**（https://claude.ai/artifact/JKbSyQhWamQ3VXADR7x6GX）に集約する。Google Tasks（リスト「やることボード」）と双方向同期できる。
+
+- 会話の終わりに、未解決・返事待ち・後でやることが残っていればボードの `tasks` に ArtifactData で登録する（重複は update、片付いたら `status: done`）
+- このリポジトリは公開なので、タスクの中身はリポジトリに書かない
+- データ形式・同期手順・初回設定: `Organization/秘書/Skills/task_board.md`
