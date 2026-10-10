@@ -1,0 +1,6 @@
+{
+  "name": "control-panel",
+  "version": "0.1.0",
+  "description": "サブエージェント・進捗・残りトークン・作業履歴をまとめて表示するコントロールパネル",
+  "types": "./types/index.d.ts"
+}
