@@ -12,11 +12,16 @@ export type AgentRow = {
   type: string
   status: string
   parentId?: string
+  /** When the panel first saw it. */
+  startedAt?: number
 }
 
 export type TaskStatus = 'pending' | 'in_progress' | 'completed'
 
-export type TaskRow = { id: string; subject: string; status: TaskStatus }
+export type TaskRow = { id: string; subject: string; status: TaskStatus; activeForm?: string }
+
+/** A tool call that has started and not yet answered. */
+export type ActiveCall = { id: string; text: string; agentId?: string; startedAt: number }
 
 export type LogKind = 'prompt' | 'tool' | 'agent' | 'done' | 'error'
 
@@ -41,6 +46,8 @@ declare module 'claude-code' {
       log: LogRow[]
       turn: Turn
       tab: Tab
+      active: ActiveCall[]
+      now: number
     }
   }
 }

@@ -1,7 +1,7 @@
 import { atom, read, update } from 'claude-code'
 import type { EngineInterface, Register } from 'claude-code'
 
-import type { AgentRow, LogKind, LogRow, Tab, TaskRow, TaskStatus, Turn, Usage } from '../types'
+import type { ActiveCall, AgentRow, LogKind, LogRow, Tab, TaskRow, TaskStatus, Turn, Usage } from '../types'
 
 const PANE = 'control-panel'
 const TITLE = 'コントロールパネル'
@@ -20,6 +20,9 @@ const turn = atom({ plugin: 'control-panel', key: 'turn' } as const, {
   turns: 0,
 })
 const tab = atom({ plugin: 'control-panel', key: 'tab' } as const, 'overview')
+const active = atom({ plugin: 'control-panel', key: 'active' } as const, [])
+/** The clock as of the last tick; ticks only while something runs, so elapsed times move. */
+const now = atom({ plugin: 'control-panel', key: 'now' } as const, 0)
 
 const TABS: { id: Tab; label: string; hotkey: string }[] = [
   { id: 'overview', label: '概要', hotkey: '1' },
@@ -29,6 +32,8 @@ const TABS: { id: Tab; label: string; hotkey: string }[] = [
 ]
 
 const FINISHED = new Set(['completed', 'failed', 'killed'])
+/** Agent statuses that mean it is working now (an idle teammate waits for a message). */
+const WORKING = new Set(['running', 'pending', 'waiting'])
 
 type Dollar = EngineInterface
 
@@ -80,6 +85,25 @@ const describeCall = (e: { tool: string } & Record<string, unknown>) => {
 
 const pushLog = ($: Dollar, row: LogRow) => update($, log, list => [...list, row].slice(-LOG_CAP))
 
+const taskLabel = (t: TaskRow) => (t.status === 'in_progress' && t.activeForm ? t.activeForm : t.subject)
+
+/** Puts a one-line summary of what runs on the status line, or clears it when idle. */
+const refreshStatus = async ($: Dollar) => {
+  const t = await read($, turn)
+  const working = (await read($, agents)).filter(a => WORKING.has(a.status))
+  const doing = (await read($, tasks)).filter(x => x.status === 'in_progress')
+  if (!t.isRunning && working.length === 0) {
+    $.ui.status(undefined)
+    return
+  }
+  const parts = [
+    doing[0] ? `▶ ${clip(taskLabel(doing[0]), 30)}` : t.isRunning ? '▶ 作業中' : '▶ サブエージェント稼働中',
+    doing.length > 1 ? `他タスク${doing.length - 1}` : '',
+    working.length ? `サブエージェント${working.length}` : '',
+  ]
+  $.ui.status(parts.filter(Boolean).join(' · '))
+}
+
 
 // ---------- polling ----------
 
@@ -106,6 +130,8 @@ const refreshAgents = async ($: Dollar) => {
     parentId: a.parentId,
   }))
   const before = await read($, agents)
+  const at = await $.clock.now()
+  for (const row of rows) row.startedAt = before.find(b => b.id === row.id)?.startedAt ?? at
   // Keep agents the engine stopped listing, so the panel remembers who worked.
   const merged = [...before.filter(old => !rows.some(r => r.id === old.id)), ...rows]
   for (const row of rows) {
@@ -117,6 +143,7 @@ const refreshAgents = async ($: Dollar) => {
         text: `サブエージェント${row.status === 'completed' ? '完了' : '終了(' + row.status + ')'}: ${row.description}`,
         agentId: row.id,
       })
+      await update($, active, list => list.filter(c => c.agentId !== row.id))
     }
   }
   if (!same(before, merged)) await update($, agents, () => merged)
@@ -124,6 +151,15 @@ const refreshAgents = async ($: Dollar) => {
 
 const refreshAll = async ($: Dollar) => {
   await Promise.allSettled([refreshUsage($), refreshAgents($)])
+  const isBusy =
+    (await read($, turn)).isRunning ||
+    (await read($, agents)).some(a => WORKING.has(a.status)) ||
+    (await read($, active)).length > 0
+  if (isBusy) {
+    const at = await $.clock.now()
+    await update($, now, () => at)
+  }
+  await refreshStatus($)
 }
 
 // ---------- tasks ----------
@@ -167,7 +203,9 @@ export const register: Register = on => {
       tools: 0,
       turns: t.turns + 1,
     }))
+    await update($, now, () => at)
     await pushLog($, { at, kind: 'prompt', text: e.text ? `指示: ${e.text}` : '(続行)' })
+    void refreshStatus($)
 
     return next(e)
   })
@@ -176,6 +214,7 @@ export const register: Register = on => {
     if (e.agentId === undefined) {
       const at = await $.clock.now()
       await update($, turn, t => ({ ...t, isRunning: false }))
+      await update($, active, list => list.filter(c => c.agentId !== undefined))
       const used = e.usage ? ` / 出力 ${kTokens(e.usage.output_tokens)} tok` : ''
       await pushLog($, {
         at,
@@ -208,28 +247,54 @@ export const register: Register = on => {
     if (e.tool === 'TodoWrite') {
       const rows: TaskRow[] = e.todos.map((t, i) => ({
         id: `todo-${i}`,
-        subject: t.status === 'in_progress' ? t.activeForm || t.content : t.content,
+        subject: t.content,
         status: t.status,
+        activeForm: t.activeForm,
       }))
       await update($, tasks, () => rows)
     }
     if (e.tool === 'TaskUpdate' && e.status) {
       const status = e.status
       const subject = e.subject
+      const activeForm = e.activeForm
       await setTask($, e.taskId, t =>
         status === 'deleted'
           ? null
-          : { id: e.taskId, subject: subject ?? t?.subject ?? `#${e.taskId}`, status: status as TaskStatus },
+          : {
+              id: e.taskId,
+              subject: subject ?? t?.subject ?? `#${e.taskId}`,
+              status: status as TaskStatus,
+              activeForm: activeForm ?? t?.activeForm,
+            },
       )
     }
+    const createdForm = e.tool === 'TaskCreate' ? e.activeForm : undefined
 
-    const ran = await next(e)
+    const call: ActiveCall = { id: e.tool_use_id, text: describeCall(loose), agentId: e.agentId, startedAt: at }
+    await update($, active, list => [...list, call].slice(-100))
+    await update($, now, () => at)
+    void refreshStatus($)
+
+    let ran: Awaited<ReturnType<typeof next>>
+    try {
+      ran = await next(e)
+    } finally {
+      await update($, active, list => list.filter(c => c.id !== call.id))
+    }
 
     // … and from what it answered.
     if (e.tool === 'TaskCreate' && ran.result && !ran.isError) {
       const created = (ran.result as { task?: { id: string; subject: string } }).task
-      if (created) await setTask($, created.id, () => ({ id: created.id, subject: created.subject, status: 'pending' }))
+      if (created) {
+        await setTask($, created.id, () => ({
+          id: created.id,
+          subject: created.subject,
+          status: 'pending',
+          activeForm: createdForm,
+        }))
+      }
     }
+    if (e.tool === 'TodoWrite' || e.tool === 'TaskUpdate' || e.tool === 'TaskCreate') void refreshStatus($)
     if (e.tool === 'Agent') void refreshAgents($)
     if (ran.isError) {
       await pushLog($, { at: await $.clock.now(), kind: 'error', text: `失敗: ${e.tool}`, agentId: e.agentId })
@@ -249,6 +314,8 @@ export const register: Register = on => {
     const agentList = await read($, agents)
     const taskList = await read($, tasks)
     const logList = await read($, log)
+    const calls = await read($, active)
+    const clockNow = await read($, now)
 
     const nameOf = (id?: string) => {
       if (!id) return ''
@@ -293,24 +360,101 @@ export const register: Register = on => {
       )
     }
 
-    const turnSection = () => (
-      <Box flexDirection="column" marginTop={1}>
-        <Text bold>現在の作業</Text>
-        {t.turns === 0 ? (
-          <Text dimColor>まだ指示はありません。</Text>
-        ) : (
-          <Box flexDirection="column">
-            <Text color={t.isRunning ? 'claude' : 'success'}>
-              {t.isRunning ? '● 作業中' : '✔ 待機中'}
-              <Text dimColor>
-                {'  '}#{t.turns} · {hhmmss(t.startedAt)}開始 · ツール {t.tools}回
-              </Text>
+    const elapsed = (since?: number) => (since && clockNow >= since ? seconds(clockNow - since) : '')
+
+    /** The box pinned above every tab: what runs right now, at a glance. */
+    const runningSection = () => {
+      const working = agentList.filter(a => WORKING.has(a.status))
+      const doing = taskList.filter(x => x.status === 'in_progress')
+      const mainCall = calls.filter(c => c.agentId === undefined).at(-1)
+      const callOf = (id: string) => calls.filter(c => c.agentId === id).at(-1)
+      const isBusy = t.isRunning || working.length > 0 || doing.length > 0
+      const inner = Math.max(10, width - 4)
+
+      if (!isBusy) {
+        return (
+          <Box borderStyle="round" borderDimColor flexDirection="column" paddingX={1} marginBottom={1}>
+            <Text color="success" bold>
+              ✔ 待機中
             </Text>
-            {t.prompt && <Text dimColor wrap="truncate-end">「{clip(t.prompt, width * 2)}」</Text>}
+            <Text dimColor wrap="truncate-end">
+              {t.turns === 0
+                ? '実行中のタスクはありません。'
+                : `実行中のタスクはありません(前回: #${t.turns} ${hhmmss(t.startedAt)}開始 · ツール${t.tools}回)`}
+            </Text>
           </Box>
-        )}
-      </Box>
-    )
+        )
+      }
+
+      const counts = [
+        doing.length ? `タスク ${doing.length}` : '',
+        working.length ? `サブエージェント ${working.length}` : '',
+      ].filter(Boolean)
+
+      return (
+        <Box borderStyle="round" borderColor="claude" flexDirection="column" paddingX={1} marginBottom={1}>
+          <Text bold color="claude">
+            ▶ 実行中{counts.length ? <Text dimColor>{'  '}({counts.join(' · ')})</Text> : ''}
+          </Text>
+
+          {t.isRunning && (
+            <Box flexDirection="column" marginTop={1}>
+              <Text wrap="truncate-end">
+                <Text bold>秘書(メイン) </Text>
+                <Text dimColor>
+                  経過 {elapsed(t.startedAt)} · ツール {t.tools}回
+                </Text>
+              </Text>
+              {t.prompt && <Text wrap="truncate-end">　指示「{clip(t.prompt, inner * 2)}」</Text>}
+              {mainCall && (
+                <Text wrap="truncate-end" color="suggestion">
+                  　⚙ {clip(mainCall.text, inner)}
+                  <Text dimColor> ({elapsed(mainCall.startedAt)})</Text>
+                </Text>
+              )}
+            </Box>
+          )}
+
+          {doing.length > 0 && (
+            <Box flexDirection="column" marginTop={1}>
+              <Text bold>進行中のタスク</Text>
+              {doing.map(x => (
+                <Text wrap="truncate-end" color="claude">
+                  　▶ {taskLabel(x)}
+                </Text>
+              ))}
+            </Box>
+          )}
+
+          {working.length > 0 && (
+            <Box flexDirection="column" marginTop={1}>
+              <Text bold>稼働中のサブエージェント</Text>
+              {working.map(a => {
+                const c = callOf(a.id)
+                return (
+                  <Box flexDirection="column">
+                    <Text wrap="truncate-end">
+                      <Text color="claude">　● </Text>
+                      {a.description}
+                      <Text dimColor>
+                        {'  '}
+                        {a.type} · 経過 {elapsed(a.startedAt)}
+                      </Text>
+                    </Text>
+                    {c && (
+                      <Text wrap="truncate-end" color="suggestion">
+                        　　⚙ {clip(c.text, inner - 4)}
+                        <Text dimColor> ({elapsed(c.startedAt)})</Text>
+                      </Text>
+                    )}
+                  </Box>
+                )
+              })}
+            </Box>
+          )}
+        </Box>
+      )
+    }
 
     const agentsSection = (limit: number) => {
       const running = agentList.filter(a => !FINISHED.has(a.status))
@@ -407,7 +551,6 @@ export const register: Register = on => {
       ) : (
         <Box flexDirection="column">
           {tokenSection()}
-          {turnSection()}
           {agentsSection(5)}
           {tasksSection(6)}
           {logSection(8)}
@@ -417,6 +560,7 @@ export const register: Register = on => {
     return (
       <Box flexDirection="column">
         {tabs}
+        {runningSection()}
         {body}
       </Box>
     )
