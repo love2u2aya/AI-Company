@@ -18,3 +18,4 @@ __pycache__/
 *.pyc
 client_secret.json
 Organization/SNS_Manager/Skills/token.json
+Organization/秘書/Skills/gtasks_token.json
