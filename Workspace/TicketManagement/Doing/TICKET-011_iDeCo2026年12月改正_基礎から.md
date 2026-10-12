@@ -28,6 +28,7 @@
 ## 完了条件
 
 - [x] FP: 深掘りブリーフ作成（社長メモのファクトチェック＋夫婦ケース）
+- [x] 秘書: 競合動画調査（YouTube人気iDeCo動画）
 - [ ] 社長: ブリーフ確認（1本構成 or 2本分割の判断）
 - [ ] Planner: 企画3案作成
 - [ ] Critic: 5軸審査・判定
@@ -38,3 +39,4 @@
 ## 参照ファイル
 
 - FPブリーフ: `Workspace/Output/AgentOutput/FPブリーフ_20261012.md`
+- 競合動画調査: `Workspace/Output/AgentOutput/競合動画調査_iDeCo_20261012.md`
