@@ -30,15 +30,17 @@
 - [x] FP: 深掘りブリーフ作成（社長メモのファクトチェック＋夫婦ケース）
 - [x] 秘書: 競合動画調査（YouTube人気iDeCo動画）
 - [x] 秘書: 2本構成のたたき台作成（社長の確認用）
-- [ ] 社長: ブリーフ確認（1本構成 or 2本分割の判断）
-- [ ] Planner: 企画3案作成
-- [ ] Critic: 5軸審査・判定
-- [ ] Designer: サムネイルラフ作成
-- [ ] 社長承認①（GO）
+- [x] 社長: 2本構成でGO（前編：入口と改正／後編：出口と夫婦）（2026-10-13）
+- [x] Planner: 企画（2本構成のたたき台を正式案として採用）
+- [x] Critic: 5軸審査・判定（前編85点・後編84点、ともにCONDITIONAL）
+- [x] Designer: サムネイルラフ作成（前編・後編 各2案）
+- [ ] 社長承認①（タイトル・サムネ方向・Critic修正条件の確認）
 - [ ] FP: 一次資料（厚労省／iDeCo公式／国税庁）で数値の最終確認
 
 ## 参照ファイル
 
 - FPブリーフ: `Workspace/Output/AgentOutput/FPブリーフ_20261012.md`
 - 競合動画調査: `Workspace/Output/AgentOutput/競合動画調査_iDeCo_20261012.md`
-- 2本構成のたたき台: `Workspace/Output/AgentOutput/企画_20261012_iDeCo改正2本構成.md`
+- 企画（2本構成）: `Workspace/Output/AgentOutput/企画_20261012_iDeCo改正2本構成.md`
+- 批評レポート: `Workspace/Output/AgentOutput/批評レポート_20261013.md`
+- サムネイルラフ: `Workspace/Output/AgentOutput/サムネイルラフ_20261013/前編_後編ラフ.md`
