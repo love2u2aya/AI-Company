@@ -46,3 +46,4 @@
 - 企画（2本構成）: `Workspace/Output/AgentOutput/企画_20261012_iDeCo改正2本構成.md`
 - 批評レポート: `Workspace/Output/AgentOutput/批評レポート_20261013.md`
 - サムネイルラフ: `Workspace/Output/AgentOutput/サムネイルラフ_20261013/前編_後編ラフ.md`
+- 動画アジェンダ（Gドキュ・A4×2枚）: https://docs.google.com/document/d/1ThjlXcQwXgVTwOzA4hCOw5l5TerZqB_dmCOFpCz2rqw/edit
