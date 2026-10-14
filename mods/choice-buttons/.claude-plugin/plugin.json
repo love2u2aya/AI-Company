@@ -1,0 +1,7 @@
+{
+  "name": "choice-buttons",
+  "version": "0.1.0",
+  "author": { "name": "love2u2aya" },
+  "description": "Claudeが選択を求めたとき、プロンプトの上に「はい／いいえ」などのボタンを出し、押すだけで答えられるようにする",
+  "types": "./types/index.d.ts"
+}
