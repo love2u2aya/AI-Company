@@ -1,5 +1,8 @@
 {
   "name": "papamama-mods",
   "owner": { "name": "love2u2aya" },
-  "plugins": [{ "name": "control-panel", "source": "./mods/control-panel" }]
+  "plugins": [
+    { "name": "control-panel", "source": "./mods/control-panel" },
+    { "name": "choice-buttons", "source": "./mods/choice-buttons" }
+  ]
 }
