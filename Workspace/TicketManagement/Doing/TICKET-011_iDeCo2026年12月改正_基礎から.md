@@ -40,7 +40,10 @@
 - [x] FP: 数値の最終確認（金融機関の公式案内で照合。掛金は自動で上がらない点を確認）
 - [x] Creator: ナレーション原稿（前編・後編）
 - [x] FP／Critic: 台本チェック（FP PASS／Critic CONDITIONAL：尺が約10分）
-- [ ] 社長: 台本確認（尺は約10分で進めるか）
+- [x] 社長: 台本は最新版（約10分）で動画化へ。ネタ帳編も1本追加（2026-10-15）
+- [x] Creator: ナレーション原稿（ネタ帳編・8つのポイント）
+- [x] Video_Producer: ElevenLabs版の制作スクリプトとテロップ見本・無音確認版（3本）
+- [ ] Video_Producer（社長のローカルPC）: ElevenLabs「パパの声」で音声を作り、3本をMP4化（手順書参照）
 - [ ] Slide_Designer: スライド（前編20枚・後編22枚）
 - [ ] 音声収録・Editor・Video_Producer・QC
 - [ ] 社長承認②（非公開プレビュー確認）
@@ -56,4 +59,7 @@
 - ナレーション原稿（前編）: `Workspace/Output/AgentOutput/ナレーション原稿_iDeCo改正前編_20261015.md`
 - ナレーション原稿（後編）: `Workspace/Output/AgentOutput/ナレーション原稿_iDeCo改正後編_20261015.md`
 - 台本チェック: `Workspace/Output/AgentOutput/台本批評レポート_20261015.md`
+- ナレーション原稿（ネタ帳編）: `Workspace/Output/AgentOutput/ナレーション原稿_iDeCoネタ帳_8つのポイント_20261015.md`
+- 動画制作手順（ElevenLabs）: `Workspace/Output/AgentOutput/動画制作手順_ElevenLabsパパの声_20261015.md`
+- 制作スクリプト: `Organization/Video_Producer/Skills/produce_video_elevenlabs.py`
 - 動画アジェンダ（Gドキュ・A4×2枚）: https://docs.google.com/document/d/1ThjlXcQwXgVTwOzA4hCOw5l5TerZqB_dmCOFpCz2rqw/edit
