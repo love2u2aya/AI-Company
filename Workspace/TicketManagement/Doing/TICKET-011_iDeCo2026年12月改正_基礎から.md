@@ -36,8 +36,14 @@
 - [x] Planner: 企画（2本構成のたたき台を正式案として採用）
 - [x] Critic: 5軸審査・判定（前編85点・後編84点、ともにCONDITIONAL）
 - [x] Designer: サムネイルラフ作成（前編・後編 各2案）
-- [ ] 社長承認①（タイトル・サムネ方向・Critic修正条件の確認）
-- [ ] FP: 一次資料（厚労省／iDeCo公式／国税庁）で数値の最終確認
+- [x] 社長承認①：推奨案でGO（前編タイトルB短縮版・後編タイトルA、サムネ両編とも案A、Critic修正条件を反映）（2026-10-15）
+- [x] FP: 数値の最終確認（金融機関の公式案内で照合。掛金は自動で上がらない点を確認）
+- [x] Creator: ナレーション原稿（前編・後編）
+- [x] FP／Critic: 台本チェック（FP PASS／Critic CONDITIONAL：尺が約10分）
+- [ ] 社長: 台本確認（尺は約10分で進めるか）
+- [ ] Slide_Designer: スライド（前編20枚・後編22枚）
+- [ ] 音声収録・Editor・Video_Producer・QC
+- [ ] 社長承認②（非公開プレビュー確認）
 
 ## 参照ファイル
 
@@ -46,4 +52,8 @@
 - 企画（2本構成）: `Workspace/Output/AgentOutput/企画_20261012_iDeCo改正2本構成.md`
 - 批評レポート: `Workspace/Output/AgentOutput/批評レポート_20261013.md`
 - サムネイルラフ: `Workspace/Output/AgentOutput/サムネイルラフ_20261013/前編_後編ラフ.md`
+- FPファクトチェック: `Workspace/Output/AgentOutput/FPファクトチェック_20261015.md`
+- ナレーション原稿（前編）: `Workspace/Output/AgentOutput/ナレーション原稿_iDeCo改正前編_20261015.md`
+- ナレーション原稿（後編）: `Workspace/Output/AgentOutput/ナレーション原稿_iDeCo改正後編_20261015.md`
+- 台本チェック: `Workspace/Output/AgentOutput/台本批評レポート_20261015.md`
 - 動画アジェンダ（Gドキュ・A4×2枚）: https://docs.google.com/document/d/1ThjlXcQwXgVTwOzA4hCOw5l5TerZqB_dmCOFpCz2rqw/edit
