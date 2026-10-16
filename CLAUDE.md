@@ -40,7 +40,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## チャンネル運営の鉄則（全動画必須）
 
-`Workspace/チャンネル運営の鉄則.md` に定義。①タイトルは流行りの型に乗せる ②コメントに全件しっかり返信 ③公開と同時に固定コメント ④投稿は毎回18:00（JST）。
+`Workspace/チャンネル運営の鉄則.md` に定義。①タイトルは流行りの型に乗せる ②コメントに全件しっかり返信 ③公開と同時に固定コメント ④投稿は毎回18:00（JST） ⑤公開直後90分の初速を監視し、不調なら予備サムネに差し替え。
 
 ## Workspace/ の使い方
 
