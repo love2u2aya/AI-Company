@@ -38,6 +38,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 | `QC/` | 動画品質管理・アップロード許可証の発行（Editor納品後〜アップロード前の最終チェック） |
 | `Video_Producer/` | 実際のMP4生成（espeak-ng音声合成＋Pillow スライド描画＋MoviePy/FFmpeg合成）。`Skills/produce_video.py` を実行する |
 
+## チャンネル運営の鉄則（全動画必須）
+
+`Workspace/チャンネル運営の鉄則.md` に定義。①タイトルは流行りの型に乗せる ②コメントに全件しっかり返信 ③公開と同時に固定コメント ④投稿は毎回18:00（JST）。
+
 ## Workspace/ の使い方
 
 - **`Output/AgentOutput/`** — 各メンバーが作業中に生成した中間成果物（企画書、素材一覧、レポートなど）
