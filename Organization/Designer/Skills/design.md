@@ -11,8 +11,10 @@
 ### Phase 2：本番制作（社長承認①後）
 1. GOが出た企画のサムネイルを本番クオリティで2〜3案仕上げる
 2. `AgentOutput/サムネイル案_YYYYMMDD/` に保存
-3. 完成動画とセットで秘書に提出 → 社長承認②で最終選択
-4. 採用確定版を `FinalOutput/` に格納
+3. 完成動画とセットで秘書に提出 → 社長承認②で **採用案と予備案（2番手）** を選んでもらう
+4. 採用確定版と予備版を `FinalOutput/` に格納
+   - 予備版は公開90分の初速が不調だったときの差し替え用（`Workspace/チャンネル運営の鉄則.md` 鉄則⑤）
+   - 予備版は採用案と「切り口」を変える（例：採用＝数字直撃型 → 予備＝感情・顔アップ型）。色違い程度では差し替えの意味がない
 
 ## 高CTRサムネイルの原則
 
@@ -32,4 +34,5 @@
 ## 成果物の置き場所
 
 サムネイル案 → `Workspace/Output/AgentOutput/サムネイル_YYYYMMDD/`  
-採用確定版 → `Workspace/Output/FinalOutput/サムネイル_YYYYMMDD_タイトル.png`
+採用確定版 → `Workspace/Output/FinalOutput/サムネイル_YYYYMMDD_タイトル.png`  
+予備版 → `Workspace/Output/FinalOutput/サムネイル_YYYYMMDD_タイトル_予備.png`
